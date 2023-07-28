@@ -1,0 +1,90 @@
+name: "sam_decoder_onnx"
+platform: "onnxruntime_onnx"
+max_batch_size : 0
+input [
+  {
+    name: "orig_im_size"
+    data_type: TYPE_FP32
+    format: FORMAT_NONE
+    dims: [ 2 ]
+    is_shape_tensor: false,
+    allow_ragged_batch: false,
+    optional: false
+  },
+  {
+    name: "has_mask_input"
+    data_type: TYPE_FP32
+    format: FORMAT_NONE
+    dims: [ 1 ]
+    is_shape_tensor: false,
+    allow_ragged_batch: false,
+    optional: false
+  },
+  {
+    name: "mask_input"
+    data_type: TYPE_FP32
+    format: FORMAT_NONE
+    dims: [ 1, 1, 256, 256 ]
+    is_shape_tensor: false,
+    allow_ragged_batch: false,
+    optional: false
+  },
+  {
+    name: "point_labels"
+    data_type: TYPE_FP32
+    format: FORMAT_NONE
+    dims: [ 1, -1 ]
+    is_shape_tensor: false,
+    allow_ragged_batch: false,
+    optional: false
+  },
+  {
+    name: "point_coords"
+    data_type: TYPE_FP32
+    format: FORMAT_NONE
+    dims: [ 1, -1, 2 ]
+    is_shape_tensor: false,
+    allow_ragged_batch: false,
+    optional: false
+  },
+  {
+    name: "image_embeddings"
+    data_type: TYPE_FP32
+    format: FORMAT_NONE
+    dims: [ 1, 256, 64, 64 ]
+    is_shape_tensor: false,
+    allow_ragged_batch: false,
+    optional: false
+  }  
+]
+output [
+  {
+    name: "low_res_masks"
+    data_type: TYPE_FP32
+    dims: [ -1, 1, -1, -1 ]
+    label_filename: "",
+    is_shape_tensor: false
+  },
+  {
+    name: "iou_predictions"
+    data_type: TYPE_FP32
+    dims: [ -1, 1 ]
+    label_filename: "",
+    is_shape_tensor: false
+  },
+  {
+    name: "masks"
+    data_type: TYPE_FP32
+    dims: [ -1, -1, -1, -1 ]
+    label_filename: "",
+    is_shape_tensor: false
+  }
+]
+
+instance_group[
+  {
+    count: 1
+    kind: KIND_GPU
+    gpus: [ 0 ]
+  }
+]
